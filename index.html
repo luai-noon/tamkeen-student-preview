@@ -1,35 +1,46 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
   <head>
     <meta charset="utf-8" />
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>معامل نون</title>
-    <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
+    <!-- The web Lottie player's engine, fetched while the app's script loads (keep the version in step with package.json). -->
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-web@0.44.0/dist/dotlottie-player.wasm" as="fetch" crossorigin />
     <style id="expo-reset">
-      /* These styles make the body full-height */
       html,
       body {
         height: 100%;
       }
-      /* These styles disable body scrolling if you are using <ScrollView> */
       body {
         overflow: hidden;
       }
-      /* These styles make the root element full-height */
       #root {
         display: flex;
         height: 100%;
         flex: 1;
       }
+      /* The phone's splash (app.json: splash-icon.png, 192 wide, white), shown until the opening animation draws. */
+      #native-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #native-splash img {
+        width: 192px;
+        height: auto;
+      }
     </style>
   </head>
 
   <body>
-    <!-- Use static rendering with Expo Router to support running without JavaScript. -->
-    <noscript> You need to enable JavaScript to run this app. </noscript>
-    <!-- The root element for your Expo app. -->
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="native-splash"><img src="splash-icon.png" alt="" /></div>
     <div id="root"></div>
-  <script src="/tamkeen-student-preview/_expo/static/js/web/index-935883adeb5c15a225a2a8972c78d1d8.js" defer></script>
+  <script src="/tamkeen-student-preview/_expo/static/js/web/index-6b4fff0545b4815dd37260dab09f1209.js" defer></script>
 </body>
 </html>
