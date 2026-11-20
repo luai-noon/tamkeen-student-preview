@@ -5,8 +5,6 @@
     <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>معامل نون</title>
-    <!-- The web Lottie player's engine, fetched while the app's script loads (keep the version in step with package.json). -->
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/@lottiefiles/dotlottie-web@0.44.0/dist/dotlottie-player.wasm" as="fetch" crossorigin />
     <style id="expo-reset">
       html,
       body {
@@ -20,12 +18,14 @@
         height: 100%;
         flex: 1;
       }
-      /* The phone's splash (app.json: splash-icon.png, 192 wide, white), shown until the opening animation draws. */
+      /* The phone's splash (app.json: splash-icon.png, 192 wide, white), then the opening drawn over it at 1 px per
+         unit and centred, as ui/BootSplash.tsx draws it, so the app can take the same player over without a jump. */
       #native-splash {
         position: fixed;
         inset: 0;
         z-index: 10;
         background: #ffffff;
+        overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -34,13 +34,49 @@
         width: 192px;
         height: auto;
       }
+      #opening {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 440px;
+        height: 1000px;
+        transform: translate(-50%, -50%);
+      }
     </style>
   </head>
 
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="native-splash"><img src="splash-icon.png" alt="" /></div>
+    <div id="native-splash"><img id="splash-image" src="splash-icon.png" alt="" /><div id="opening"></div></div>
     <div id="root"></div>
-  <script src="/tamkeen-student-preview/_expo/static/js/web/index-6b4fff0545b4815dd37260dab09f1209.js" defer></script>
+    <!-- Both copied in by scripts/web-files.js. -->
+    <script src="lottie_light.min.js"></script>
+    <script>
+      // The opening's simmer starts here, before the app's script has loaded: the same file and player the app uses
+      // (ui/Lottie.web.tsx), which takes this player over and decides when it boils over, as ui/BootSplash.tsx does.
+      (function () {
+        var box = document.getElementById('opening');
+        if (!window.lottie || !box) return;
+        var anim = lottie.loadAnimation({ container: box, renderer: 'svg', loop: false, autoplay: false, path: 'opening.json' });
+        var opening = (window.__opening = { anim: anim, box: box, loaded: false, adopted: false });
+        var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+        function simmer() {
+          var m = (anim.animationData.markers || []).filter(function (x) { return x.cm === 'simmer'; })[0];
+          if (m) anim.playSegments([m.tm, m.tm + m.dr], true);
+        }
+        anim.addEventListener('DOMLoaded', function () {
+          opening.loaded = true;
+          document.getElementById('splash-image').style.visibility = 'hidden';
+          if (!opening.adopted && !still) {
+            simmer();
+            if (performance.mark) performance.mark('opening-simmer');
+          }
+        });
+        anim.addEventListener('complete', function () {
+          if (!opening.adopted) simmer();
+        });
+      })();
+    </script>
+  <script src="/tamkeen-student-preview/_expo/static/js/web/index-a7409fe109959b189247e1edbb69e4f3.js" defer></script>
 </body>
 </html>
